@@ -18,44 +18,43 @@ local Main = Window:MakeTab({
 
 Main:AddTextbox({
 	Name = "Name of Player",
-	Default = "write",
-	TextDisappear = true,
+	Default = "",
+	TextDisappear = false,
 	Callback = function(Value)
-		
+		local destination = game.Players.LocalPlayer.Character.Parent[Value].HumanoidRootPart.Position -- Точка в космосе или в другом месте
+        local function setGravity(value)
+            workspace.Gravity = value
+        end
+        local tweenInfo = TweenInfo.new(
+            10,
+            Enum.EasingStyle.Linear,
+            Enum.EasingDirection.InOut,
+            0,
+            false,
+            0
+        )
+        local goal = {
+            CFrame = CFrame.new(destination)
+        }
+        humanoidRootPart.CanCollide = false
+        local tween = TweenService:Create(humanoidRootPart, tweenInfo, goal)
+        tween.Completed:Connect(function()
+            print("Movement complete.")
+            setGravity(196.1)
+        end)
+        local function startMovement()
+            print("Calculating...")
+            setGravity(0)
+            tween:Play()
+        end
+        startMovement()
 	end	  
 })
 
-Main:AddButton({
-	Name = "Goto",
-	Callback = function()
-            local destination = workspace.Value.Head.CFrame.Position --Vector3.new(0, 10, 0) -- Точка в космосе или в другом месте
-            local function setGravity(value)
-                workspace.Gravity = value
-            end
-            local tweenInfo = TweenInfo.new(
-                0.5,
-                Enum.EasingStyle.Linear,
-                Enum.EasingDirection.InOut,
-                0,
-                false,
-                0
-            )
-            local goal = {
-                CFrame = CFrame.new(destination)
-            }
-            humanoidRootPart.CanCollide = false
-            local tween = TweenService:Create(humanoidRootPart, tweenInfo, goal)
-            tween.Completed:Connect(function()
-                print("Movement complete.")
-                setGravity(196.1)
-            end)
-            local function startMovement()
-                print("Calculating...")
-                setGravity(0)
-                tween:Play()
-            end
-            startMovement()
-  	end    
-})
-
-
+--{    Main:AddButton({
+--        Name = "Goto",
+--       Callback = function()
+--                
+--        end    
+--    })
+--}
